@@ -224,14 +224,48 @@ At each step, all four columns highlight the active item, registers show updated
 | **M4 — Polish** | Animations, connection lines, tooltips, dark mode, examples library | 3 weeks |
 | **M5 — Education** | Guided tutorials, "explain this step", shareable URLs | 3 weeks |
 
-## 11. Open Questions
+## 11. Future Direction: RISC-V Pipeline Visualizer
+
+A natural evolution of DeepStep is to replace the Intel x86-64 / microcode layers (Columns 3 & 4) with a **RISC-V** architecture and **pipeline visualizer**:
+
+### Rationale
+- **RISC-V is open**: No proprietary microcode to approximate — instruction semantics are fully specified and public
+- **Regular encoding**: Fixed 32-bit instructions are simpler to decode, display, and teach than variable-length x86
+- **No microcode layer needed**: RISC instructions map directly to hardware operations, eliminating the need for a speculative µop model
+- **Pipeline visualization is the natural replacement**: Instead of showing µop decomposition, show instructions flowing through pipeline stages
+
+### Pipeline Visualizer Design
+- **Classic 5-stage pipeline**: IF (Instruction Fetch) → ID (Instruction Decode) → EX (Execute) → MEM (Memory Access) → WB (Write Back)
+- **One instruction per clock**, but pipeline depth > 1 stage — multiple instructions in-flight simultaneously
+- **Hazard visualization**: Show data hazards, control hazards, and structural hazards as they occur
+- **Forwarding paths**: Visualize data forwarding (bypassing) that avoids stalls
+- **Stall indicators**: Make pipeline bubbles and stalls visually obvious
+- **Tunable depth**: Start with 5-stage, optionally explore deeper pipelines and their tradeoffs
+
+### Pedagogical Value
+Students can directly observe:
+- Why data dependencies cause pipeline stalls
+- How forwarding/bypassing reduces stall cycles
+- How branch prediction affects pipeline efficiency
+- The throughput vs. latency tradeoff of deeper pipelines
+- How WASM instructions map to a real, open ISA
+
+### Revised Column Layout (Future)
+| Column | Current (Intel) | Future (RISC-V) |
+|--------|----------------|-----------------|
+| 1 | WASM Bytecode | WASM Bytecode (unchanged) |
+| 2 | WASM VM Internals | WASM VM Internals (unchanged) |
+| 3 | Intel x86-64 Instructions | RISC-V Instructions |
+| 4 | Intel Microcode (µops) | Pipeline Visualizer (IF/ID/EX/MEM/WB) |
+
+## 12. Open Questions
 
 1. **Microcode accuracy vs. pedagogy**: How faithful should the µop model be? Real microcode is proprietary. Recommendation: optimize for teaching, cite sources, label it as "approximate model."
 2. **WASM → x86 fidelity**: Should the x86 output mimic a specific engine (V8 TurboFan) or be a clean pedagogical mapping? Recommendation: start pedagogical, add "V8-style" and "SpiderMonkey-style" modes later.
 3. **Compilation support**: Should users be able to write C/Rust and compile in-browser? Recommendation: defer to M5+, start with paste/upload of .wasm/.wat and curated examples.
 4. **Mobile support**: Four columns on a phone is rough. Recommendation: tabbed view on mobile, one column at a time with swipe navigation.
 
-## 12. Success Metrics
+## 13. Success Metrics
 
 - GitHub stars as a proxy for developer interest (target: 1k in first 3 months)
 - Educational adoption: at least 3 university courses link to it in first year
